@@ -11,11 +11,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import 	android.telephony.SmsManager;
+import 	android.app.PendingIntent;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.UUID;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 /**
  * Example class to connect to provide a custom bluetooth service
@@ -152,9 +157,7 @@ public class MainActivity extends Activity {
         @Override
         public void run() {
             try {
-                byte[] reponse = new byte[65];
-                byte[] jsonMessage = new byte[65];
-
+                byte[] reponse = new byte[5];
                 // Wait for a connexion to the service
                 appendMessageToConsole("En attente d'une connection au service...");
                 currentSocket = serverSocket.accept();
@@ -164,28 +167,31 @@ public class MainActivity extends Activity {
                         appendMessageToConsole("Stream créés");
                         while (running) {
                             dataIS.read(reponse);
-                            String recep = "";
-                            for(int i = 0; i < reponse.length; i++){
-                                recep = recep + reponse[i]+" ,";
-
-                            }
-
-                            for(int z = 5; z < reponse.length; z++){
-                                jsonMessage[z - 5] = reponse[z];
-                            }
-
-                            String json = new String(jsonMessage);
-
-                            appendMessageToConsole(recep);
-                            appendMessageToConsole(json);
+                            if (reponse[0]==10) smsSend(reponse);
+                            appendMessageToConsole("Requête : " +reponse[0]+" , "+reponse[1]+" , "+reponse[2]+" , "+reponse[3]+" , "+reponse[4]);
                             dataOS.write(reponse);
                         }
                     }
                 }
             } catch (Exception e) {
                 Log.e(LOG_TAG, "Error in service thread", e);
-                appendMessageToConsole("Problème dans le Thread du service " + e.getMessage() + "\"");
+                appendMessageToConsole("Problème dans le Thread du service :\"" + e.getMessage() + "\"");
             }
+        }
+
+    public void smsSend(byte[] message){
+
+            byte[] d = new byte[10];
+            for(int i = 0; i<message[2]+message[3]+message[4]+message[5]; i++){
+                d[i] = message[i+5];
+            }
+            String dest = new String (d);
+            JSONParser parser = new JSONParser();
+            JSONObject json = (JSONObject) parser.parse(dest);
+            SmsManager sms = SmsManager.getDefault();
+            Intent intent= new Intent("SMS_ACTION_SENT");
+            PendingIntent spi= PendingIntent.getBroadcast(null,0,intent,0);
+            sms.sendTextMessage(dest, null, mes, spi, spi);
         }
 
         /**
