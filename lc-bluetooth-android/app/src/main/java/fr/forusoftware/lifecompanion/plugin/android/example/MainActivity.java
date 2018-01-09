@@ -179,7 +179,7 @@ public class MainActivity extends Activity {
             }
         }
 
-    public void smsSend(byte[] message){
+    public void smsSend(byte[] message) throws Exception{
 
             byte[] d = new byte[10];
             for(int i = 0; i<message[2]+message[3]+message[4]+message[5]; i++){
@@ -191,7 +191,7 @@ public class MainActivity extends Activity {
             SmsManager sms = SmsManager.getDefault();
             Intent intent= new Intent("SMS_ACTION_SENT");
             PendingIntent spi= PendingIntent.getBroadcast(null,0,intent,0);
-            sms.sendTextMessage(dest, null, mes, spi, spi);
+            sms.sendTextMessage(json.toString("num",0), null, json.toString("message",1), spi, spi);
         }
 
         /**
