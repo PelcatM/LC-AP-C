@@ -1,1 +1,1 @@
-include ':app'
+include ':app', ':json-simple-1.1.1-sources', ':json-simple-1.1', ':java-json'
