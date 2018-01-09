@@ -15,7 +15,7 @@ DES COMMANDES UTILES POUR UTILISER LE GIT :
 
 
 
--git push origin (nom de la branche)	-> pousse le travail sur le dépot distant (visible à partir de l'URL https://github.com/PelcatM/LC-AP-C )
+-git push (origin) (nom de la branche)	-> pousse le travail sur le dépot distant sur la branche correspondante si elle est référencée (visible à partir de l'URL https://github.com/PelcatM/LC-AP-C )
 
 master pour la branche courante
 
