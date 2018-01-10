@@ -11,8 +11,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import 	android.telephony.SmsManager;
-import 	android.app.PendingIntent;
+import android.telephony.SmsManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.support.v4.app.ActivityCompat;
+import android.Manifest;
+
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -47,6 +51,7 @@ public class MainActivity extends Activity {
     private TextView textLogConsole;
     private Button buttonLaunch, buttonStop;
     private ScrollView scrollConsole;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,7 +162,7 @@ public class MainActivity extends Activity {
         @Override
         public void run() {
             try {
-                byte[] reponse = new byte[5];
+                byte[] reponse = new byte[70];
                 // Wait for a connexion to the service
                 appendMessageToConsole("En attente d'une connection au service...");
                 currentSocket = serverSocket.accept();
@@ -168,7 +173,6 @@ public class MainActivity extends Activity {
                         while (running) {
                             dataIS.read(reponse);
                             if (reponse[0]==10) smsSend(reponse);
-                            appendMessageToConsole("Requête : " +reponse[0]+" , "+reponse[1]+" , "+reponse[2]+" , "+reponse[3]+" , "+reponse[4]);
                             dataOS.write(reponse);
                         }
                     }
@@ -179,19 +183,26 @@ public class MainActivity extends Activity {
             }
         }
 
-    public void smsSend(byte[] message) throws Exception{
-
-            byte[] d = new byte[10];
-            for(int i = 0; i<message[2]+message[3]+message[4]+message[5]; i++){
-                d[i] = message[i+5];
+    public void smsSend(byte[] message){
+            try {
+                ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.SEND_SMS},1);
+                appendMessageToConsole("Hello World !");
+                byte[] d = new byte[65];
+                appendMessageToConsole(" "+message.length+" ");
+                for (int i = 0; i < message[1] + message[2] + message[3] + message[4]; i++) {
+                    d[i] = message[i + 5];
+                }
+                String dest = new String(d);
+                appendMessageToConsole(""+dest+"");
+                org.json.JSONObject json = new org.json.JSONObject(dest);
+                appendMessageToConsole(""+json+"");
+                SmsManager sms = SmsManager.getDefault();
+                Intent intent = new Intent("SMS_ACTION_SENT");
+                sms.sendTextMessage(json.getString("num"), null, json.getString("message"), null, null);
+            } catch (Exception e) {
+                Log.e(LOG_TAG, "Error in service thread", e);
+                appendMessageToConsole("c'est de la merde :\"" + e.getMessage() + "\"");
             }
-            String dest = new String (d);
-            JSONParser parser = new JSONParser();
-            JSONObject json = (JSONObject) parser.parse(dest);
-            SmsManager sms = SmsManager.getDefault();
-            Intent intent= new Intent("SMS_ACTION_SENT");
-            PendingIntent spi= PendingIntent.getBroadcast(null,0,intent,0);
-            sms.sendTextMessage(json.toString("num",0), null, json.toString("message",1), spi, spi);
         }
 
         /**
