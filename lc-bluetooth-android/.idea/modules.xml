@@ -3,8 +3,11 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/java-json/java-json.iml" filepath="$PROJECT_DIR$/java-json/java-json.iml" />
+      <module fileurl="file://$PROJECT_DIR$/json-simple-1.1/json-simple-1.1.iml" filepath="$PROJECT_DIR$/json-simple-1.1/json-simple-1.1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/json-simple-1.1.1-sources/json-simple-1.1.1-sources.iml" filepath="$PROJECT_DIR$/json-simple-1.1.1-sources/json-simple-1.1.1-sources.iml" />
       <module fileurl="file://$PROJECT_DIR$/lc-bluetooth-android.iml" filepath="$PROJECT_DIR$/lc-bluetooth-android.iml" />
-      <module fileurl="file://C:\Users\Simon\Documents\lc-bluetooth-example\lc-bluetooth-android\test-bluetooth-android.iml" filepath="C:\Users\Simon\Documents\lc-bluetooth-example\lc-bluetooth-android\test-bluetooth-android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/test-bluetooth-android.iml" filepath="$PROJECT_DIR$/test-bluetooth-android.iml" />
     </modules>
   </component>
 </project>

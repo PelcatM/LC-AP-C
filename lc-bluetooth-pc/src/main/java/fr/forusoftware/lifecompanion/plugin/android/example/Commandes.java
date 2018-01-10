@@ -2,17 +2,20 @@ package fr.forusoftware.lifecompanion.plugin.android.example;
 
 import org.json.simple.JSONObject;
 
-
+/**
+ * Class who regroup all the methode to write some messages in Bytes verifying our Bluetooth Protocol
+ * @author Simon Naveau
+ * */
 public class Commandes{
 	
-	  public static byte[] writeCommande(String cmd) throws Exception{
+	 public static byte[] writeCommande(String cmd) throws Exception{		//methode juste pour le test d'envoi de sms
 		  byte[] ret = null;
 		  
 		  if(cmd.equals("send")) {
 			  
 			  JSONObject obj = new JSONObject();
-			  obj.put("num", "0785531462");
-			  obj.put("message", "pipi caca prout j'aime les chats");
+			  obj.put("num", "0645703988");
+			  obj.put("message", "Grosse merde");
 			  
 			  byte[] message = Converting.JsonToByte(obj);
 			  ret = new byte[5+message.length];
@@ -21,200 +24,310 @@ public class Commandes{
 			  ret[2] = 0;
 			  ret[3] = 0;
 			  ret[4] = 0;
-			  System.out.println(message.length);
-			  for(int i = 5; i < message.length; i++) {
-				  ret[i] = message[i-5];
+			  for(int i = 0; i < message.length; i++) {
+				  ret[i+5] = message[i];
 			  }
 			  
 		  }
 		  return ret;
 	  }
+	  
+	/**
+	 * Create a message to launch the ask of the contact list on the mobile phone connected in bluetooth.
+	 * @return The message in a table of byte ready to send.
+	 * @throws Exception if we can't create the message
+	 */
+	  public static byte[] writeCt_List() throws Exception{
+		  byte[] ret = new byte[5];
+		  
+			  ret[0] = 1;
+			  ret[1] = 0;
+			  ret[2] = 0;
+			  ret[3] = 0;
+			  ret[4] = 0;
+			  
+		  return ret;
+	  }
+	  
+	  /**
+		 * Create a message to launch the ask of a specific contact on the mobile phone connected in bluetooth.
+		 * @param idCt The id of the contact in the android device.
+		 * @return The message in a table of byte ready to send.
+		 * @throws Exception if we can't create the message
+		 */
+	  public static byte[] writeCt(int idCt) throws Exception{
+		  byte[] ret = new byte[5];
+		  
+			  ret[0] = 2;
+			  ret[1] = 1;
+			  ret[2] = 0;
+			  ret[3] = 0;
+			  ret[4] = 0;
+			  ret[5] = (byte) idCt;
+			  
+		  return ret;
+	  }
+	  
+	  /**
+		 * Create a message to launch the add of a contact in the contact list of the mobile phone connected in bluetooth.
+		 * @param vCard The information on the new contact (vCard converted in a byte)
+		 * @return The message in a table of byte ready to send.
+		 * @throws Exception if we can't create the message
+		 */
+	  public static byte[] writeCt_Add(byte vCard) throws Exception{
+		  byte[] ret = new byte[6];
+		  
+			  ret[0] = 3;
+			  ret[1] = 1;
+			  ret[2] = 0;
+			  ret[3] = 0;
+			  ret[4] = 0;
+			  ret[5] = vCard;
+			  
+		  return ret;
+	  }
+	  
+	  /**
+		 * Create a message to launch the edit a contact in the contact list of the mobile phone connected in bluetooth.
+		 * @param idCt The id of the contact in the android device to edit.
+		 * @param vCard The information on the contact (vCard converted in a byte)
+		 * @return The message in a table of byte ready to send.
+		 * @throws Exception if we can't create the message
+		 */
+	  public static byte[] writeCt_Edit(int idCt, byte vCard) throws Exception{
+		  byte[] ret = new byte[7];
+		  
+			  ret[0] = 4;
+			  ret[1] = 2;
+			  ret[2] = 0;
+			  ret[3] = 0;
+			  ret[4] = 0;
+			  ret[5] = (byte) idCt;
+			  ret[6] = vCard;
+			  
+		  return ret;
+	  }
+	  
+	  /**
+		 * Create a message to launch the remove of a contact in the contact list of the mobile phone connected in bluetooth.
+		 * @param idCtDelete The id of the contact to remove in the android device to edit.
+		 * @return The message in a table of byte ready to send.
+		 * @throws Exception if we can't create the message
+		 */
+	  public static byte[] writeCt_Remove(int idCtDelete) throws Exception{
+		  byte[] ret = new byte[6];
+		  
+			  ret[0] = 5;
+			  ret[1] = 1;
+			  ret[2] = 0;
+			  ret[3] = 0;
+			  ret[4] = 0;
+			  ret[5] = (byte) idCtDelete;
+			  
+		  return ret;
+	  }
+	  
+	  /**
+		 * Create a message to launch the sending of an SMS with the android device to a mobile phone.
+		 * @param obj The information for the send (phone number and message) in a JSONObject.
+		 * @return The message in a table of byte ready to send.
+		 * @throws Exception if we can't create the message
+		 */
+	  public static byte[] writeSms_Send(JSONObject obj) throws Exception{			//Il faudra ajouter l'ID du contact
+		  byte[] ret = null;
 
-	  public static void response(byte[] rep){
-	    if( rep[0]==0){
-	      ct_list();
-	    }
-	    else if(rep[0]==1){
-	      ct_list_rest();
-	    }
-	    else if(rep[0]==2){
-	      ct();
-	    }
-	    else if(rep[0]==3){
-	      ct_ret();
-	    }
-	    else if(rep[0]==4){
-	      ct_add();
-	    }
-	    else if(rep[0]==5){
-	      ct_add_ret();
-	    }
-	    else if(rep[0]==6){
-	      ct_edit();
-	    }
-	    else if(rep[0]==7){
-	      ct_edit_ret();
-	    }
-	    else if(rep[0]==8){
-	      ct_remove();
-	    }
-	    else if(rep[0]==9){
-	      ct_remove_ret();
-	    }
-	    else if(rep[0]==10){
-	      sms_send();
-	    }
-	    else if(rep[0]==11){
-	      sms_send_ret();
-	    }
-	    else if(rep[0]==12){
-	      sms_send_grp();
-	    }
-	    else if(rep[0]==13){
-	      sms_send_grp_ret();
-	    }
-	    else if(rep[0]==14){
-	      sms_get();
-	    }
-	    else if(rep[0]==15){
-	      sms_get_ret();
-	    }
-	    else if(rep[0]==16){
-	      sms_get_num();
-	    }
-	    else if(rep[0]==17){
-	      sms_all();
-	    }
-	    else if(rep[0]==18){
-	      ct_sms_all_ret();
-	    }
-	    else if(rep[0]==19){
-	      sms_get_num();
-	    }
-	    else if(rep[0]==20){
-	      sms_get_num_ret();
-	    }
-	    else if(rep[0]==21){
-	      sms_notify();
-	    }
-	    else if(rep[0]==22){
-	      ct_sms_notify_ret();
-	    }
-	    else if(rep[0]==23){
-	      call();
-	    }
-	    else if(rep[0]==24){
-	      call_ret();
-	    }
-	    else if(rep[0]==25){
-	      call_vid();
-	    }
-	    else if(rep[0]==26){
-	      call_vid_ret();
-	    }
+		  byte[] message = Converting.JsonToByte(obj);
+		  
+			  ret = new byte[20+message.length];
+			  ret[0] = 6;
+			  ret[1] = (byte) message.length;
+			  ret[2] = 0;
+			  ret[3] = 0;
+			  ret[4] = 0;
+			  
+			  for(int i = 0; i < message.length; i++) {
+				  ret[i+5] = message[i];
+			  }
+			  
+		  return ret;
 	  }
-	
-	  private static void ct_list(){
-	    System.out.println("CT_LIST");
+	  
+	  /**
+		 * Create a message to launch the sending of an SMS to many phone numbers with the android device to a mobile phone.
+		 * @param obj The information for the send (phone number and message) in a JSONObject.
+		 * @param grpId The id of the group in the android device connected.
+		 * @return The message in a table of byte ready to send.
+		 * @throws Exception if we can't create the message
+		 */
+	  public static byte[] writeSms_Send_Grp(int grpId, JSONObject obj) throws Exception{
+		  byte[] ret = null;
+		  int taille = 0;
+
+		  byte[] message = Converting.JsonToByte(obj);
+		  
+			  ret = new byte[20+message.length];
+			  taille = message.length+1;
+			  ret[0] = 7;
+			  ret[1] = (byte) taille;
+			  ret[2] = 0;
+			  ret[3] = 0;
+			  ret[4] = 0;
+			  ret[5] = (byte) grpId;
+			  
+			  for(int i = 0; i < message.length; i++) {
+				  ret[i+6] = message[i];
+			  }
+			  
+		  return ret;
 	  }
-	
-	  private static void ct_list_rest(){
-	    System.out.println("CT_LIST_REST");
+	  
+	  /**
+		 * Create a message to launch the ask of the SMS from a contact on the android device to a mobile phone.
+		 * @param idCt The id of the contact in the android device.
+		 * @return The message in a table of byte ready to send.
+		 * @throws Exception if we can't create the message
+		 */
+	  public static byte[] writeSms_Get(int idCt) throws Exception{
+		  byte[] ret = new byte[6];
+		  
+			  ret[0] = 8;
+			  ret[1] = 1;		//Variable dans la spécif mais différent de tout les autres coups.
+			  ret[2] = 0;
+			  ret[3] = 0;
+			  ret[4] = 0;
+			  ret[5] = (byte) idCt;
+
+		  return ret;
 	  }
-	
-	  private static void ct(){
-	    System.out.println("CT");
+	  
+	  /**
+		 * Create a message to launch the ask of the phone number of a SMS sender on the android device to a mobile phone.
+		 * @param idSms The id of the SMS in the android device.
+		 * @return The message in a table of byte ready to send.
+		 * @throws Exception if we can't create the message
+		 */
+	  public static byte[] writeSms_Get_Num(int idSms) throws Exception{
+		  byte[] ret = new byte[6];
+		  
+			  ret[0] = 9;
+			  ret[1] = 1;		
+			  ret[2] = 0;
+			  ret[3] = 0;
+			  ret[4] = 0;
+			  ret[5] = (byte) idSms;
+
+		  return ret;
 	  }
-	
-	  private static void ct_ret(){
-	    System.out.println("CT_RET");
+	  
+	  /**
+		 * Create a message to launch the ask a list of all the SMS in the android device to a mobile phone.
+		 * @return The message in a table of byte ready to send.
+		 * @throws Exception if we can't create the message
+		 */
+	  public static byte[] writeSms_All() throws Exception{
+		  byte[] ret = new byte[6];
+		  
+			  ret[0] = 10;
+			  ret[1] = 0;		
+			  ret[2] = 0;
+			  ret[3] = 0;
+			  ret[4] = 0;
+
+		  return ret;
 	  }
-	
-	  private static void ct_add(){
-	    System.out.println("CT_ADD");
+	  
+	  /**
+		 * Create a message to launch the ask of the phone number of a SMS receiver on the android device to a mobile phone.
+		 * @param idSms The id of the SMS in the android device.
+		 * @return The message in a table of byte ready to send.
+		 * @throws Exception if we can't create the message
+		 */
+	  public static byte[] writeSms_Get_NumDest(int idSms) throws Exception{	//Changement du nom car conflit
+		  byte[] ret = new byte[6];
+		  
+			  ret[0] = 11;
+			  ret[1] = 1;		
+			  ret[2] = 0;
+			  ret[3] = 0;
+			  ret[4] = 0;
+			  ret[5] = (byte) idSms;
+
+		  return ret;
 	  }
-	
-	  private static void ct_add_ret(){
-	    System.out.println("CT_ADD_RET");
+	  
+	  /**
+		 * Create a message to answer to a SMS_NOTIFY command launch by the android device. Answer if the information is arrived or not to the serveur.
+		 * @param received True if received correctly or false if not.
+		 * @return The message in a table of byte ready to send.
+		 * @throws Exception if we can't create the message
+		 */
+	  public static byte[] writeCt_Sms_Notify_Ret(boolean received) throws Exception{	
+		  byte[] ret = new byte[6];
+		  
+			  ret[0] = 12;
+			  ret[1] = 1;		
+			  ret[2] = 0;
+			  ret[3] = 0;
+			  ret[4] = 0;											//Envoi de l'aquitement ou non sur un octet et non un bit unique pour faciliter la lecture.
+			  if(received == true) {
+				  ret[5] = (byte) 1;
+			  }
+			  else {
+				  ret[5] = (byte) 0;
+			  }
+
+		  return ret;
 	  }
-	
-	  private static void ct_edit(){
-	    System.out.println("CT_EDIT");
+	  
+	  /**
+		 * Create a message to launch a call with the android device connected.
+		 * @param choice Defined if the call is made with a phone number(false) or a contact id(true) .
+		 * @param idCt The id of the contact in the android device.
+		 * @param num The phone number to call
+		 * @return The message in a table of byte ready to send.
+		 * @throws Exception if we can't create the message
+		 */
+	  public static byte[] writeCall(boolean choice,int idCt, int num) throws Exception{		//if choix = true  => utilisation de l'identifiant sinon le numero de télephone
+		  byte[] ret = new byte[6];
+		  
+			  ret[0] = 13;
+			  ret[1] = 1;		
+			  ret[2] = 0;
+			  ret[3] = 0;
+			  ret[4] = 0;
+			  if(choice == true) {
+				  ret[5] = (byte) idCt;
+			  }
+			  else {
+				  ret[5] = (byte) num;					//WARNING !!! Va surement poser un problème
+			  }
+
+		  return ret;
 	  }
-	
-	  private static void ct_edit_ret(){
-	    System.out.println("CT_EDIT_RET");
-	  }
-	
-	  private static void ct_remove(){
-	    System.out.println("CT_REMOVE");
-	  }
-	
-	  private static void ct_remove_ret(){
-	    System.out.println("CT_REMOVE_RET");
-	  }
-	
-	  private static void sms_send(){
-	    System.out.println("SMS_SEND");
-	  }
-	
-	  private static void sms_send_ret(){
-	    System.out.println("SMS_SEND_RET");
-	  }
-	
-	  private static void sms_send_grp(){
-	    System.out.println("SMS_SEND_GRP");
-	  }
-	
-	  private static void sms_send_grp_ret(){
-	    System.out.println("SMS_SEND_GRP_RET");
-	  }
-	
-	  private static void sms_get(){
-	    System.out.println("SMS_GET");
-	  }
-	
-	  private static void sms_get_ret(){
-	    System.out.println("SMS_GET_RET");
-	  }
-	
-	  private static void sms_all(){
-	    System.out.println("SMS_ALL");
-	  }
-	
-	  private static void ct_sms_all_ret(){
-	    System.out.println("CT_SMS_ALL_RET");
-	  }
-	
-	  private static void sms_get_num(){
-	    System.out.println("SMS_GET_NUM");
-	  }
-	
-	  private static void sms_get_num_ret(){
-	    System.out.println("SMS_GET_NUM_RET");
-	  }
-	
-	  private static void sms_notify(){
-	    System.out.println("SMS_NOTIFY");
-	  }
-	
-	  private static void ct_sms_notify_ret(){
-	    System.out.println("CT_SMS_NOTIFY_RET");
-	  }
-	
-	  private static void call(){
-	    System.out.println("CALL");
-	  }
-	
-	  private static void call_ret(){
-	    System.out.println("CALL_RET");
-	  }
-	
-	  private static void call_vid(){
-	    System.out.println("CALL_VID");
-	  }
-	
-	  private static void call_vid_ret(){
-	    System.out.println("CALL_VID_RET");
+	  
+	  /**
+		 * Create a message to launch a call with the video with the android device connected.
+		 * @param choice Defined if the call is made with a phone number(false) or a contact id(true) .
+		 * @param idCt The id of the contact in the android device.
+		 * @param num The phone number to call
+		 * @return The message in a table of byte ready to send.
+		 * @throws Exception if we can't create the message
+		 */	
+	  public static byte[] writeCall_Vid(boolean choix, int idCt, int num) throws Exception{			//Amelioration
+		  byte[] ret = new byte[6];
+		  
+			  ret[0] = 14;
+			  ret[1] = 1;		
+			  ret[2] = 0;
+			  ret[3] = 0;
+			  ret[4] = 0;
+			  if(choix == true) {				
+				  ret[5] = (byte) idCt;
+			  }
+			  else {
+				  ret[5] = (byte) num;
+			  }
+
+		  return ret;
 	  }
 }

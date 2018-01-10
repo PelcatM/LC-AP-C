@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="true"
+        jar="C:\Users\Thibault\Documents\lc-bluetooth-android\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.0"
+        sha1="d5edff392f11fa45385b5b236399bc61caa3c311">
+        <dex dex="C:\Users\Thibault\Documents\lc-bluetooth-android\app\build\intermediates\transforms\dex\debug\folders\1000\10000\instant-run-bootstrap_997b57727be3e20f55f671a11ebf3f99785dfb28\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Thibault\Documents\lc-bluetooth-android\app\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.0"
+        sha1="3be78ebc2706b2e1fe2f12d5726887a92d6c183b">
+        <dex dex="C:\Users\Thibault\Documents\lc-bluetooth-android\app\build\intermediates\transforms\dex\debug\folders\1000\10000\instant-run_aae8a2f8b26132e089900e26bd3b82446a1a0b0f\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Thibault\.android\build-cache\f88acce19b94956fe0712a4e32284a70c439a7bd\output\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.0"
+        sha1="44ee06abb66da30f5855e6bf54574e64cdcd982a">
+        <dex dex="C:\Users\Thibault\Documents\lc-bluetooth-android\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_41472a202361063f4c030b386d4b8e120a425ba5\classes.dex" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Thibault\AppData\Local\Android\sdk\extras\m2repository\com\android\support\constraint\constraint-layout-solver\1.0.2\constraint-layout-solver-1.0.2.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="b9cd8fc6bd15cb915735d34535db30ece0c44603">
+        <dex dex="C:\Users\Thibault\Documents\lc-bluetooth-android\app\build\intermediates\pre-dexed\debug\constraint-layout-solver-1.0.2_6a95818955826b6c1d2638ddb5b7ae02c0e4dfbe.jar" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Thibault\AppData\Local\Android\sdk\extras\m2repository\com\android\support\constraint\constraint-layout-solver\1.0.2\constraint-layout-solver-1.0.2.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.0"
+        sha1="b9cd8fc6bd15cb915735d34535db30ece0c44603">
+        <dex dex="C:\Users\Thibault\Documents\lc-bluetooth-android\app\build\intermediates\transforms\dex\debug\folders\1000\10\constraint-layout-solver-1.0.2_6a95818955826b6c1d2638ddb5b7ae02c0e4dfbe\classes.dex" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Thibault\.android\build-cache\f88acce19b94956fe0712a4e32284a70c439a7bd\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.0"
+        sha1="44ee06abb66da30f5855e6bf54574e64cdcd982a">
+        <dex dex="C:\Users\Thibault\Documents\lc-bluetooth-android\app\build\intermediates\pre-dexed\debug\classes_41472a202361063f4c030b386d4b8e120a425ba5.jar" />
+    </item>
+
+</items>
