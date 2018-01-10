@@ -47,12 +47,23 @@ public class MainActivity extends Activity {
      */
     private LCAndroidServiceThread serviceThread;
 
-    // View items
+    /**
+     *  View items
+     * We'll see on our smartphone when we'll launch the application
+     */
     private TextView textLogConsole;
     private Button buttonLaunch, buttonStop;
     private ScrollView scrollConsole;
 
-
+    /**
+     * It initializes the activity
+     * create the application and the item's action in this app
+     * For example we have a button that initalize the bluetooth server
+     * and check if the bluetooth is enabled on the device and make it visible
+     * if it's not done yet.
+     * The other button stop the service by closing the thread
+     * @param savedInstanceState contains the activity's frozen state, if there was one
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,7 +120,13 @@ public class MainActivity extends Activity {
         }
     }
 
-    // When intent to activate bluetooth returns
+    /**
+     * Launch the server if the attributes are good
+     * @param requestCode it identifies who this result come from
+     * @param resultCode returned by the child activity
+     * @param data can return result to the caller
+     */
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == ENABLE_BLUETOOTH_INTENT_ID) {
@@ -124,7 +141,6 @@ public class MainActivity extends Activity {
 
     /**
      * Method to append a new message in the {@link TextView}, and to scroll to this message
-     *
      * @param msg the message to add
      */
     private void appendMessageToConsole(final String msg) {
@@ -159,6 +175,12 @@ public class MainActivity extends Activity {
             buttonStop.setEnabled(true);
         }
 
+        /**
+         * At first, it waits for a connection and then  initializes the output and input stream
+         * If the Thread is still running, it reads the response or the asking from the smartphone
+         * Then it chooses what method is calling the smartphone for or only the response for what he asked for
+         * After all this, it writes a response to the smartphone wth the result it asked for
+         */
         @Override
         public void run() {
             try {
@@ -183,12 +205,19 @@ public class MainActivity extends Activity {
             }
         }
 
+        /**
+         * it sends a sms to a person if the first bytes of the table from the smartphone is 10
+         * it asks for the permission to send a sms
+         * Then it takes only the phone number and the message from the response
+         * With a JSon parse it into a phone number and a message
+         * @param message the byte table which contains the phone number and the message
+         */
+
     public void smsSend(byte[] message){
             try {
                 ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.SEND_SMS},1);
                 appendMessageToConsole("Hello World !");
                 byte[] d = new byte[65];
-                appendMessageToConsole(" "+message.length+" ");
                 for (int i = 0; i < message[1] + message[2] + message[3] + message[4]; i++) {
                     d[i] = message[i + 5];
                 }
@@ -201,13 +230,12 @@ public class MainActivity extends Activity {
                 sms.sendTextMessage(json.getString("num"), null, json.getString("message"), null, null);
             } catch (Exception e) {
                 Log.e(LOG_TAG, "Error in service thread", e);
-                appendMessageToConsole("c'est de la merde :\"" + e.getMessage() + "\"");
+                appendMessageToConsole("L'envois du message a echoue :\"" + e.getMessage() + "\"");
             }
         }
 
         /**
          * Try to stop the current bluetooth service
-         *
          * @throws IOException if stop fails
          */
         public void stopService() throws IOException {
