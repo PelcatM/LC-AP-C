@@ -1,5 +1,7 @@
 package fr.forusoftware.lifecompanion.plugin.android.example;
 
+import java.util.Scanner;
+
 import org.json.simple.JSONObject;
 
 /**
@@ -14,8 +16,8 @@ public class Commandes{
 		  if(cmd.equals("send")) {
 			  
 			  JSONObject obj = new JSONObject();
-			  obj.put("num", "0645703988");
-			  obj.put("message", "Grosse merde");
+			  obj.put("num", "0785531462");
+			  obj.put("message", "Message de test");
 			  
 			  byte[] message = Converting.JsonToByte(obj);
 			  ret = new byte[5+message.length];
@@ -56,7 +58,9 @@ public class Commandes{
 		 * @throws Exception if we can't create the message
 		 */
 	  public static byte[] writeCt(int idCt) throws Exception{
-		  byte[] ret = new byte[5];
+		 // if (idCt > 4000000) throw new RuntimeException("ERROR : idCt too long for the transmission"); 		//Modifier pour avoir plus en utilisant les négatifs.
+		  
+		  byte[] ret = new byte[6];
 		  
 			  ret[0] = 2;
 			  ret[1] = 1;
@@ -138,7 +142,7 @@ public class Commandes{
 
 		  byte[] message = Converting.JsonToByte(obj);
 		  
-			  ret = new byte[20+message.length];
+			  ret = new byte[5+message.length];
 			  ret[0] = 6;
 			  ret[1] = (byte) message.length;
 			  ret[2] = 0;
@@ -225,7 +229,7 @@ public class Commandes{
 		 * @throws Exception if we can't create the message
 		 */
 	  public static byte[] writeSms_All() throws Exception{
-		  byte[] ret = new byte[6];
+		  byte[] ret = new byte[5];
 		  
 			  ret[0] = 10;
 			  ret[1] = 0;		
@@ -313,7 +317,7 @@ public class Commandes{
 		 * @return The message in a table of byte ready to send.
 		 * @throws Exception if we can't create the message
 		 */	
-	  public static byte[] writeCall_Vid(boolean choix, int idCt, int num) throws Exception{			//Amelioration
+	  public static byte[] writeCall_Vid(boolean choice, int idCt, int num) throws Exception{			//Amelioration
 		  byte[] ret = new byte[6];
 		  
 			  ret[0] = 14;
@@ -321,7 +325,7 @@ public class Commandes{
 			  ret[2] = 0;
 			  ret[3] = 0;
 			  ret[4] = 0;
-			  if(choix == true) {				
+			  if(choice == true) {				
 				  ret[5] = (byte) idCt;
 			  }
 			  else {
@@ -329,5 +333,132 @@ public class Commandes{
 			  }
 
 		  return ret;
+	  }
+	  
+	  @SuppressWarnings("unchecked")
+	public static byte[] chooseCmd(CmdList cmd) throws Exception{
+			 byte[] ret = null;
+			 Scanner sc = new Scanner(System.in);
+			 
+		        switch (cmd) {
+		            case CT_LIST:
+		            	ret = Commandes.writeCt_List();
+		            	break;
+		            	
+		            case CT:
+		            	System.out.println("Veuillez saisir l'identifiant du contact a ajouter :");		//la récup ce fera d'une autre façon surement automatique
+		            	int id1 = sc.nextInt();
+		            	ret = Commandes.writeCt(id1);
+		            	break;
+		            	
+		            case CT_ADD:  
+		            	//byte vCard = Converting.vCardToByte(); //A implementer
+		            	byte vc1 = 5;
+		            	ret = Commandes.writeCt_Add(vc1);
+		            	break;
+		            	
+		            case CT_EDIT:
+		            	System.out.println("Veuillez saisir l'identifiant du contact a editer:");		//a changer car pas connu par le user
+		            	int id2 = sc.nextInt();
+		            	
+		            	//byte vCard = Converting.vCardToByte(); //A implementer
+		            	byte vc2 = 5;
+		            	ret = Commandes.writeCt_Edit(id2, vc2);
+		            	break;
+		            	
+		            case CT_REMOVE:
+		            	System.out.println("Veuillez saisir l'identifiant du contact a supprimer :");		//a changer car pas connu par le user
+		            	int id3 = sc.nextInt();
+		            	ret = Commandes.writeCt_Remove(id3);
+		            	break;
+		            	
+		            case SMS_SEND: 
+		            	JSONObject obj = new JSONObject();
+		  			  
+		            	System.out.println("Veuillez saisir le numero de telephone du destinataire:");		
+		            	String num = sc.nextLine();
+		            	obj.put("num", num);
+		            	
+		            	System.out.println("Veuillez saisir le message:");		
+		            	String msg = sc.nextLine();
+		            	obj.put("message", msg);
+		            	
+		            	ret = Commandes.writeSms_Send(obj);
+		            	System.out.println("ecriture réussite");
+		            	break;
+		            	
+		            case SMS_SEND_GRP:
+		            	JSONObject obj2 = new JSONObject();
+			  			  
+		            	System.out.println("Veuillez saisir l'identifiant du groupe destinataire :");		//a changer car pas connu par le user
+		            	int id5 = sc.nextInt();
+		            	
+		            	System.out.println("Veuillez saisir le message:");		
+		            	String msg2 = sc.nextLine();
+		            	obj2.put("message", msg2);
+		            	
+		            	ret = Commandes.writeSms_Send_Grp(id5 , obj2);
+		            	break;
+		            	
+		            case SMS_GET:
+		            	System.out.println("Veuillez saisir l'identifiant du contact :");				//a changer car pas connu par le user
+		            	int id6 = sc.nextInt();
+		            	ret = Commandes.writeSms_Get(id6);
+		            	break;
+		            	
+		            case SMS_GET_NUMDEST:  
+		            	System.out.println("Veuillez saisir l'identifiant du SMS a analyser :");		//a changer car pas connu par le user
+		            	int id7 = sc.nextInt();
+		            	ret = Commandes.writeSms_Get_NumDest(id7);
+		            	break;
+		            	
+		            case SMS_ALL: 
+		            	ret = Commandes.writeSms_All();
+		            	break;
+		            	
+		            case SMS_GET_NUM: 
+		            	System.out.println("Veuillez saisir l'identifiant du SMS a analyser :");		//a changer car pas connu par le user
+		            	int id8 = sc.nextInt();
+		            	ret = Commandes.writeSms_Get_Num(id8);
+		            	break;
+		            	
+		            case SMS_NOTIFY_RET_YES: 
+		            	ret = Commandes.writeCt_Sms_Notify_Ret(true);
+		            	break;
+		            	
+		            case SMS_NOTIFY_RET_NO:
+		            	ret = Commandes.writeCt_Sms_Notify_Ret(false);
+		            	break;
+		            	
+		            case CALL_NUM:
+		            	System.out.println("Veuillez saisir le numero a appeler :");		
+		            	int num1 = sc.nextInt();
+		            	ret = Commandes.writeCall(false, 0, num1);
+		            	break;
+		            	
+		            case CALL_ID:
+		            	System.out.println("Veuillez saisir l'identifiant du contact a appeler :");		//a changer car pas connu par le user
+		            	int id9 = sc.nextInt();
+		            	ret = Commandes.writeCall(true, id9, 0);
+		            	break;
+		            	
+		            case CALL_VID_NUM:
+		            	System.out.println("Veuillez saisir le numero a appeler :");		
+		            	int num2 = sc.nextInt();
+		            	ret = Commandes.writeCall_Vid(false, 0, num2);
+		            	break;
+		            	
+		            case CALL_VID_ID:
+		            	System.out.println("Veuillez saisir l'identifiant du contact a appeler :");		//a changer car pas connu par le user
+		            	int id10 = sc.nextInt();
+		            	ret = Commandes.writeCall_Vid(true, id10, 0);
+		            	break;
+		            	
+		            default: 
+		            	System.out.println("Error in the ask request, no conform request");
+		            	break;
+		        }
+		        sc.close();
+		        return ret;
 	  }
 }
